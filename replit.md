@@ -210,11 +210,23 @@ finalScore = (overallScore / (checks * 25)) * 100
   - Reference images for all 4 poses (Tadasana, Downward Dog, Warrior III, Namaste)
   - Responsive grid layout: side-by-side on desktop, stacked on mobile
   - Reference images stored in `assets/poses/` directory
+- **Detailed Correction Guidance Panel**: Added instructive feedback panel with step-by-step corrections
+  - New panel displays below reference image with detailed, color-coded guidance
+  - Each feedback item shows both WHAT to correct and HOW to correct it
+  - Green (success), Yellow (warning), and Red (error) color coding for clarity
+  - Scrollable panel for multiple correction points
 - **Camera Optimization**: Enhanced camera settings for smooth pose tracking
   - Resolution increased to 1280x720 for better pose detection accuracy
   - Frame rate optimized: 30fps ideal, 60fps maximum for smooth tracking
   - Improved video quality reduces false positives in pose validation
-- Fixed scoring normalization to properly scale to 0-100%
-- Each pose now correctly reaches 100% when all checks pass
-- Color thresholds now attainable across all accuracy levels
-- Consistent normalization across all 4 pose validators
+- **Fixed Scoring Accuracy** (Critical Fix):
+  - Fixed random scoring issue caused by using low-confidence keypoints
+  - ALL keypoints now checked for minimum confidence before use in calculations
+  - Scoring normalized against total possible score (100) for consistency
+  - Partial pose detection now properly warns users and gives accurate percentages
+  - Example: If only 1 of 4 checks detects 60%, score is 15% (not 60%), accurately reflecting incomplete pose
+- **Improved Validation Logic**:
+  - Tadasana validation completely rewritten with detailed feedback
+  - Confidence checks prevent "random" angles from undetected keypoints
+  - Users warned when fewer than 3 of 4 body parts detected
+  - Clear instructions on repositioning for better camera visibility

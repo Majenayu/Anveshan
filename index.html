@@ -235,6 +235,29 @@
             const leftAnkle = keypoints[15];
             const rightAnkle = keypoints[16];
 
+            const requiredKeypoints = [
+                { name: 'left shoulder', point: leftShoulder },
+                { name: 'right shoulder', point: rightShoulder },
+                { name: 'left hip', point: leftHip },
+                { name: 'right hip', point: rightHip },
+                { name: 'left knee', point: leftKnee },
+                { name: 'right knee', point: rightKnee },
+                { name: 'left ankle', point: leftAnkle },
+                { name: 'right ankle', point: rightAnkle }
+            ];
+
+            const missingPoints = requiredKeypoints.filter(kp => kp.point.score <= MIN_CONFIDENCE);
+            
+            if (missingPoints.length > 0) {
+                const missingNames = missingPoints.map(kp => kp.name).join(', ');
+                feedback.push({
+                    text: '⚠ Cannot analyze pose - insufficient body point detection',
+                    detail: `The camera cannot detect: ${missingNames}. Please ensure your full body is visible in good lighting. Step back from the camera and face it directly. All body points must be clearly visible for accurate analysis.`,
+                    type: 'warning'
+                });
+                return { score: null, feedback, checksPerformed: 0, totalChecks: 4, allPointsDetected: false };
+            }
+
             if (leftShoulder.score > MIN_CONFIDENCE && leftHip.score > MIN_CONFIDENCE && leftKnee.score > MIN_CONFIDENCE) {
                 const leftSideAngle = calculateAngle(leftShoulder, leftHip, leftKnee);
                 
@@ -349,25 +372,18 @@
 
             const totalChecks = 4;
             const totalPossibleScore = totalChecks * 25;
-            const minChecksRequired = 3;
             
-            const finalScore = (overallScore / totalPossibleScore) * 100;
-            
-            if (checks === 0) {
+            if (checks < totalChecks) {
                 feedback.unshift({ 
-                    text: '⚠ Position yourself in frame', 
-                    detail: 'Step back so your full body is visible in the camera. Make sure there\'s good lighting and you\'re facing the camera directly.',
+                    text: '⚠ Incomplete pose analysis', 
+                    detail: `Only ${checks} of ${totalChecks} pose aspects could be analyzed. This should not happen if all body points are detected. Please adjust your position.`,
                     type: 'warning' 
                 });
-            } else if (checks < minChecksRequired) {
-                feedback.unshift({ 
-                    text: '⚠ Partial view detected', 
-                    detail: `Only ${checks} of ${totalChecks} pose checks visible. Position yourself so your full body is in frame for accurate scoring. Turn slightly toward the camera if needed.`,
-                    type: 'warning' 
-                });
+                return { score: null, feedback, checksPerformed: checks, totalChecks: totalChecks, allPointsDetected: true };
             }
             
-            return { score: finalScore, feedback, checksPerformed: checks, totalChecks: totalChecks };
+            const finalScore = (overallScore / totalPossibleScore) * 100;
+            return { score: finalScore, feedback, checksPerformed: checks, totalChecks: totalChecks, allPointsDetected: true };
         }
 
         function validateAdhoMukhaSvanasana(keypoints) {
@@ -385,6 +401,31 @@
             const rightWrist = keypoints[10];
             const leftAnkle = keypoints[15];
             const rightAnkle = keypoints[16];
+
+            const requiredKeypoints = [
+                { name: 'left shoulder', point: leftShoulder },
+                { name: 'right shoulder', point: rightShoulder },
+                { name: 'left hip', point: leftHip },
+                { name: 'right hip', point: rightHip },
+                { name: 'left knee', point: leftKnee },
+                { name: 'right knee', point: rightKnee },
+                { name: 'left wrist', point: leftWrist },
+                { name: 'right wrist', point: rightWrist },
+                { name: 'left ankle', point: leftAnkle },
+                { name: 'right ankle', point: rightAnkle }
+            ];
+
+            const missingPoints = requiredKeypoints.filter(kp => kp.point.score <= MIN_CONFIDENCE);
+            
+            if (missingPoints.length > 0) {
+                const missingNames = missingPoints.map(kp => kp.name).join(', ');
+                feedback.push({
+                    text: '⚠ Cannot analyze pose - insufficient body point detection',
+                    detail: `The camera cannot detect: ${missingNames}. Please ensure your full body (including hands and feet) is visible in good lighting. All body points must be clearly visible for accurate analysis.`,
+                    type: 'warning'
+                });
+                return { score: null, feedback, checksPerformed: 0, totalChecks: 4, allPointsDetected: false };
+            }
 
             if (leftHip.score > MIN_CONFIDENCE && leftShoulder.score > MIN_CONFIDENCE && leftWrist.score > MIN_CONFIDENCE) {
                 const hipShoulderWristAngle = calculateAngle(leftHip, leftShoulder, leftWrist);
@@ -444,9 +485,20 @@
                 checks++;
             }
 
-            const maxPossibleScore = checks * 25;
-            const finalScore = maxPossibleScore > 0 ? (overallScore / maxPossibleScore) * 100 : 0;
-            return { score: finalScore, feedback };
+            const totalChecks = 4;
+            const totalPossibleScore = totalChecks * 25;
+            
+            if (checks < totalChecks) {
+                feedback.unshift({ 
+                    text: '⚠ Incomplete pose analysis', 
+                    detail: `Only ${checks} of ${totalChecks} pose aspects could be analyzed. Please adjust your position.`,
+                    type: 'warning' 
+                });
+                return { score: null, feedback, checksPerformed: checks, totalChecks: totalChecks, allPointsDetected: true };
+            }
+            
+            const finalScore = (overallScore / totalPossibleScore) * 100;
+            return { score: finalScore, feedback, checksPerformed: checks, totalChecks: totalChecks, allPointsDetected: true };
         }
 
         function validateVirabhadrasanaIII(keypoints) {
@@ -463,6 +515,29 @@
             const rightKnee = keypoints[14];
             const leftAnkle = keypoints[15];
             const rightAnkle = keypoints[16];
+
+            const requiredKeypoints = [
+                { name: 'left shoulder', point: leftShoulder },
+                { name: 'right shoulder', point: rightShoulder },
+                { name: 'left hip', point: leftHip },
+                { name: 'right hip', point: rightHip },
+                { name: 'left knee', point: leftKnee },
+                { name: 'right knee', point: rightKnee },
+                { name: 'left ankle', point: leftAnkle },
+                { name: 'right ankle', point: rightAnkle }
+            ];
+
+            const missingPoints = requiredKeypoints.filter(kp => kp.point.score <= MIN_CONFIDENCE);
+            
+            if (missingPoints.length > 0) {
+                const missingNames = missingPoints.map(kp => kp.name).join(', ');
+                feedback.push({
+                    text: '⚠ Cannot analyze pose - insufficient body point detection',
+                    detail: `The camera cannot detect: ${missingNames}. This is a balance pose requiring your full body visible. Please ensure good lighting and that your whole body (including lifted leg) is in frame.`,
+                    type: 'warning'
+                });
+                return { score: null, feedback, checksPerformed: 0, totalChecks: 4, allPointsDetected: false };
+            }
 
             const leftLegStraight = leftKnee.score > MIN_CONFIDENCE && leftAnkle.score > MIN_CONFIDENCE &&
                                    Math.abs(leftKnee.y - leftAnkle.y) > Math.abs(leftKnee.y - leftHip.y);
@@ -542,9 +617,20 @@
                 checks++;
             }
 
-            const maxPossibleScore = checks * 25;
-            const finalScore = maxPossibleScore > 0 ? (overallScore / maxPossibleScore) * 100 : 0;
-            return { score: finalScore, feedback };
+            const totalChecks = 4;
+            const totalPossibleScore = totalChecks * 25;
+            
+            if (checks < totalChecks) {
+                feedback.unshift({ 
+                    text: '⚠ Incomplete pose analysis', 
+                    detail: `Only ${checks} of ${totalChecks} pose aspects could be analyzed. Please adjust your position.`,
+                    type: 'warning' 
+                });
+                return { score: null, feedback, checksPerformed: checks, totalChecks: totalChecks, allPointsDetected: true };
+            }
+            
+            const finalScore = (overallScore / totalPossibleScore) * 100;
+            return { score: finalScore, feedback, checksPerformed: checks, totalChecks: totalChecks, allPointsDetected: true };
         }
 
         function validateNamastey(keypoints) {
@@ -561,6 +647,30 @@
             const rightWrist = keypoints[10];
             const leftHip = keypoints[11];
             const rightHip = keypoints[12];
+
+            const requiredKeypoints = [
+                { name: 'nose', point: nose },
+                { name: 'left shoulder', point: leftShoulder },
+                { name: 'right shoulder', point: rightShoulder },
+                { name: 'left elbow', point: leftElbow },
+                { name: 'right elbow', point: rightElbow },
+                { name: 'left wrist', point: leftWrist },
+                { name: 'right wrist', point: rightWrist },
+                { name: 'left hip', point: leftHip },
+                { name: 'right hip', point: rightHip }
+            ];
+
+            const missingPoints = requiredKeypoints.filter(kp => kp.point.score <= MIN_CONFIDENCE);
+            
+            if (missingPoints.length > 0) {
+                const missingNames = missingPoints.map(kp => kp.name).join(', ');
+                feedback.push({
+                    text: '⚠ Cannot analyze pose - insufficient body point detection',
+                    detail: `The camera cannot detect: ${missingNames}. Please ensure your upper body (especially hands and arms) is clearly visible in good lighting. Face the camera directly.`,
+                    type: 'warning'
+                });
+                return { score: null, feedback, checksPerformed: 0, totalChecks: 4, allPointsDetected: false };
+            }
 
             if (leftWrist.score > MIN_CONFIDENCE && rightWrist.score > MIN_CONFIDENCE && nose.score > MIN_CONFIDENCE) {
                 const handsDistance = getDistance(leftWrist, rightWrist);
@@ -626,9 +736,20 @@
                 checks++;
             }
 
-            const maxPossibleScore = checks * 25;
-            const finalScore = maxPossibleScore > 0 ? (overallScore / maxPossibleScore) * 100 : 0;
-            return { score: finalScore, feedback };
+            const totalChecks = 4;
+            const totalPossibleScore = totalChecks * 25;
+            
+            if (checks < totalChecks) {
+                feedback.unshift({ 
+                    text: '⚠ Incomplete pose analysis', 
+                    detail: `Only ${checks} of ${totalChecks} pose aspects could be analyzed. Please adjust your position.`,
+                    type: 'warning' 
+                });
+                return { score: null, feedback, checksPerformed: checks, totalChecks: totalChecks, allPointsDetected: true };
+            }
+            
+            const finalScore = (overallScore / totalPossibleScore) * 100;
+            return { score: finalScore, feedback, checksPerformed: checks, totalChecks: totalChecks, allPointsDetected: true };
         }
 
         function validatePose(poseName, keypoints) {
@@ -647,6 +768,7 @@
         }
 
         function getColorForScore(score) {
+            if (score === null || score === undefined) return '#6B7280';
             if (score >= 80) return '#10B981';
             if (score >= 60) return '#84cc16';
             if (score >= 40) return '#FFC107';
@@ -762,15 +884,28 @@
                         
                         if (feedbackEl) {
                             const scoreColor = getColorForScore(validation.score);
-                            let feedbackHTML = `
-                                <div class="mb-2">
-                                    <span class="font-bold text-lg">Score: </span>
-                                    <span class="font-bold text-xl" style="color: ${scoreColor}">
-                                        ${Math.round(validation.score)}%
-                                    </span>
-                                </div>
-                                <div class="text-sm space-y-1">
-                            `;
+                            let feedbackHTML = '';
+                            
+                            if (validation.score === null || validation.score === undefined) {
+                                feedbackHTML = `
+                                    <div class="mb-2">
+                                        <span class="font-bold text-lg" style="color: ${scoreColor}">
+                                            ⏳ Waiting for complete detection...
+                                        </span>
+                                    </div>
+                                    <div class="text-sm space-y-1">
+                                `;
+                            } else {
+                                feedbackHTML = `
+                                    <div class="mb-2">
+                                        <span class="font-bold text-lg">Score: </span>
+                                        <span class="font-bold text-xl" style="color: ${scoreColor}">
+                                            ${Math.round(validation.score)}%
+                                        </span>
+                                    </div>
+                                    <div class="text-sm space-y-1">
+                                `;
+                            }
                             
                             validation.feedback.forEach(item => {
                                 const itemColor = item.type === 'success' ? '#10B981' : 

@@ -282,3 +282,111 @@ finalScore = (overallScore / (checks * 25)) * 100
 - **Camera Optimization**: Enhanced camera settings for smooth pose tracking (1280x720, 30-60fps)
 - **Fixed Scoring Accuracy**: Confidence checks prevent "random" angles from undetected keypoints
 - **Improved Validation Logic**: Tadasana validation rewritten with detailed feedback
+
+## Usage Instructions
+
+### Running the Web Platform
+
+The yoga web platform runs automatically via the configured workflow. The server is already running on port 5000.
+
+**Access the platform:**
+- Click the "Open Website" button in the Replit interface
+- Or navigate to the provided Replit URL in your browser
+
+**Web Platform Features:**
+1. **Dashboard** - View your progress, streak, and wellness metrics
+2. **Asana Library** - Browse all available yoga poses with descriptions
+3. **AR Correction** - Real-time camera-based pose correction (requires camera permission)
+4. **Virtual Assistant** - Ask yoga questions to the AI (requires Gemini API key)
+
+**Browser Voice Control (Built-in):**
+- Click the microphone button in the top-right corner of the web interface
+- Say commands like "go to dashboard", "open pose library", "start posture correction"
+- This works entirely in the browser - no additional setup needed
+
+### Running the Sunday AI Voice Assistant (Optional)
+
+The Sunday AI Voice Assistant (`assistant.py`) provides advanced voice control with wake word detection.
+
+**Important:** This requires:
+- Microphone access
+- Chrome browser installed
+- Active internet connection
+- Ability to run desktop applications
+
+**To run the assistant locally:**
+1. Open a new Shell terminal
+2. Run: `python assistant.py`
+3. The assistant will:
+   - Calibrate your microphone
+   - Open a Chrome browser window with the yoga platform
+   - Start listening for the wake word "Sunday"
+
+**Voice Commands:**
+- Say "Sunday" to activate the assistant
+- Follow with commands like:
+  - "Sunday, open pose library"
+  - "Sunday, start posture correction"
+  - "Sunday, show my routine"
+  - "Sunday, go to dashboard"
+  - "Sunday, stop" (to shutdown)
+
+**Features:**
+- Wake word detection for hands-free operation
+- Text-to-speech responses with natural acknowledgements
+- Browser automation for seamless navigation
+- Conversation logging to `conversation_log.txt`
+- Status tracking in `sunday_status.json`
+
+**Note:** The voice assistant may have limited functionality in the Replit web environment. For full functionality, consider running the project locally on your computer.
+
+### Integrations
+
+**Gemini API (Virtual Assistant Feature):**
+- The Virtual Assistant tab uses Gemini 2.5 Flash for AI-powered yoga guidance
+- To enable this feature, set up the Gemini integration using Replit's integration system
+- The integration ID is: `javascript_gemini`
+- Once configured, you can ask questions about yoga poses, wellness, nutrition, and more
+
+### Troubleshooting
+
+**Camera not working:**
+- Ensure you've granted camera permissions in your browser
+- Try refreshing the page
+- Check if another application is using the camera
+
+**Voice commands not working (Browser):**
+- Ensure you've granted microphone permissions
+- Check browser compatibility (Chrome, Edge recommended)
+- Click the microphone button to activate listening
+
+**Voice assistant (Python) not starting:**
+- Verify Chrome is installed
+- Check microphone permissions
+- Review `conversation_log.txt` for error messages
+- Ensure all Python packages are installed
+
+**Virtual Assistant returning errors:**
+- Set up the Gemini integration properly
+- Check that the API key is configured
+- Verify internet connection
+
+### Development Workflow
+
+**File Structure:**
+- `server.py` - HTTP server for the web platform
+- `assistant.py` - Python voice assistant with wake word detection
+- `index.html` - Main web application
+- `assets/poses/` - Reference images for yoga poses
+- `README.md` - Comprehensive project documentation
+
+**Making Changes:**
+- Edit files directly in the Replit editor
+- The server automatically restarts when files change
+- Refresh your browser to see web platform updates
+- Restart the voice assistant manually if you change `assistant.py`
+
+**Logs:**
+- Server logs appear in the workflow console
+- Voice assistant logs are written to `conversation_log.txt`
+- Browser console logs are accessible via browser developer tools

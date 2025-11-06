@@ -205,15 +205,42 @@ finalScore = (overallScore / (checks * 25)) * 100
 - Efficient skeleton connection algorithm
 
 ### Recent Changes (November 6, 2025)
-- **Complete Platform Migration**: Successfully migrated and enhanced SUNDAY yoga platform to work on both Android and laptop devices
-  - **Dashboard**: Full progress tracking with posture score, streak counter, calories burned widgets
-  - **Routine Page**: Personalized yoga sequences with wellness tracking (sleep, stress, hydration)
-  - **Virtual Assistant**: Gemini 2.5 Flash AI integration with markdown formatting for yoga/wellness guidance
-  - **Asana Library**: Complete pose database with benefits, precautions, and targeted areas
-  - **AR Correction**: Real-time camera feedback with pose validation (MIN_CONFIDENCE bug fixed)
-  - **Responsive Design**: Mobile-first with Tailwind CSS breakpoints (md:) for seamless Android/laptop experience
-  - **Voice Commands**: Browser Speech Recognition API for hands-free navigation ("go to dashboard", "start routine", etc.)
-  - **Security**: Removed hardcoded API keys, now uses environment variables (__gemini_api_key) only
+
+#### Posture Correction UX Enhancements (Latest)
+- **Reference Video Display**: Added video playback for reference poses
+  - Displays correct form videos for Tadasana and Vrikshasana poses
+  - Graceful fallback to placeholder emoji for poses without videos
+  - Stored in `assets/reference_videos/` directory
+  - Auto-plays on pose selection with proper error handling
+
+- **Stabilized Suggestions System**: Implemented buffering to reduce rapid feedback changes
+  - Suggestions now update every 5 frames (BUFFER_SIZE = 5) instead of every frame
+  - Prevents jarring experience where corrections change too quickly for users to react
+  - Maintains stable feedback message until user corrects their pose
+  - Smoother user experience with predictable correction guidance
+
+- **Real-Time Pose Scoring System**: Added 0-100 accuracy scoring with visual feedback
+  - Deducts 15 points for red (major) errors, 8 points for yellow (minor) warnings
+  - Rolling average over 30 frames (≈1 second) for smooth score display
+  - Color-coded progress bar:
+    - Green (85+): Excellent form
+    - Blue/Yellow (70-84): Good form, minor adjustments
+    - Orange (50-69): Needs improvement
+    - Red (<50): Major corrections required
+  - Real-time visual motivation to maintain correct posture
+  - Score resets to 100 when starting each new pose
+
+- **Improved Error Handling**: Added null checks for DOM elements to prevent crashes during AR initialization
+
+#### Complete Platform Migration
+- **Dashboard**: Full progress tracking with posture score, streak counter, calories burned widgets
+- **Routine Page**: Personalized yoga sequences with wellness tracking (sleep, stress, hydration)
+- **Virtual Assistant**: Gemini 2.5 Flash AI integration with markdown formatting for yoga/wellness guidance
+- **Asana Library**: Complete pose database with benefits, precautions, and targeted areas
+- **AR Correction**: Real-time camera feedback with pose validation (MIN_CONFIDENCE bug fixed)
+- **Responsive Design**: Mobile-first with Tailwind CSS breakpoints (md:) for seamless Android/laptop experience
+- **Voice Commands**: Browser Speech Recognition API for hands-free navigation ("go to dashboard", "start routine", etc.)
+- **Security**: Removed hardcoded API keys, now uses environment variables (__gemini_api_key) only
 
 ### Recent Bug Fixes (November 6, 2025)
 - **AR Skeleton Drawing Fix** (Critical):

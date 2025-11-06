@@ -333,6 +333,10 @@
             isListening: false,
             recognitionInstance: null,
             
+            // TTS State
+            ttsEnabled: false,
+            isSpeaking: false,
+            
             // Methods
             init() {
                 this.renderNav();
@@ -628,6 +632,72 @@
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
                 });
+            },
+            
+            // --- TTS (Text-to-Speech) Functions ---
+            toggleTTS() {
+                this.ttsEnabled = !this.ttsEnabled;
+                const ttsBtn = document.getElementById('tts-toggle-btn');
+                const ttsIcon = document.getElementById('tts-icon');
+                const ttsText = document.getElementById('tts-status-text');
+                
+                if (this.ttsEnabled) {
+                    ttsIcon.classList.remove('text-gray-400');
+                    ttsIcon.classList.add('text-accent', 'animate-pulse');
+                    ttsText.textContent = 'Voice Guide On';
+                    ttsBtn.classList.remove('bg-gray-700');
+                    ttsBtn.classList.add('bg-accent/20', 'border-2', 'border-accent');
+                } else {
+                    ttsIcon.classList.remove('text-accent', 'animate-pulse');
+                    ttsIcon.classList.add('text-gray-400');
+                    ttsText.textContent = 'Voice Guide Off';
+                    ttsBtn.classList.remove('bg-accent/20', 'border-2', 'border-accent');
+                    ttsBtn.classList.add('bg-gray-700');
+                    
+                    // Stop any ongoing speech
+                    window.speechSynthesis.cancel();
+                    this.isSpeaking = false;
+                }
+            },
+            
+            speakCorrection(message) {
+                // Check if browser supports speech synthesis
+                if (!('speechSynthesis' in window)) {
+                    console.warn('Text-to-Speech not supported in this browser');
+                    return;
+                }
+                
+                // Don't interrupt if already speaking
+                if (this.isSpeaking || window.speechSynthesis.speaking) {
+                    return;
+                }
+                
+                // Cancel any pending speech
+                window.speechSynthesis.cancel();
+                
+                // Create utterance
+                const utterance = new SpeechSynthesisUtterance(message);
+                utterance.rate = 0.9; // Slightly slower for clarity
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                utterance.lang = 'en-US';
+                
+                // Event handlers
+                utterance.onstart = () => {
+                    this.isSpeaking = true;
+                };
+                
+                utterance.onend = () => {
+                    this.isSpeaking = false;
+                };
+                
+                utterance.onerror = (event) => {
+                    console.error('TTS Error:', event);
+                    this.isSpeaking = false;
+                };
+                
+                // Speak
+                window.speechSynthesis.speak(utterance);
             },
             
             // --- AR Correction Utilities (Now methods of app object) ---
@@ -1186,9 +1256,14 @@
                                 highAccuracyTimer = 0;
                             }
                             
-                            // Log all corrections to the correction log panel (less frequently)
-                            if (correctionCounter % 20 === 0) { // Update log every 20 frames (about once per second)
+                            // Log all corrections to the correction log panel (much less frequently for TTS)
+                            // Update every 200 frames = ~6-7 seconds at 30fps
+                            if (correctionCounter % 200 === 0) {
                                 this.logCorrections(corrections);
+                                // Speak corrections if TTS is enabled
+                                if (this.ttsEnabled && corrections.length > 0) {
+                                    this.speakCorrection(corrections[0].message);
+                                }
                             }
 
                         } else {
@@ -1739,9 +1814,19 @@
                                     </div>
                                 </div>
                                 
-                                <button onclick="app.stopARAssessment()" class="w-full py-2 px-4 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition">
-                                    Stop AR Tracking
-                                </button>
+                                <div class="flex items-center justify-between gap-3">
+                                    <button id="tts-toggle-btn" onclick="app.toggleTTS()" class="flex items-center space-x-2 px-4 py-2 bg-gray-700 rounded-xl hover:bg-gray-600 transition text-sm font-medium">
+                                        <svg id="tts-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-gray-400">
+                                            <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 0 0 1.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06ZM18.584 5.106a.75.75 0 0 1 1.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 0 1-1.06-1.06 8.25 8.25 0 0 0 0-11.668.75.75 0 0 1 0-1.06Z" />
+                                            <path d="M15.932 7.757a.75.75 0 0 1 1.061 0 6 6 0 0 1 0 8.486.75.75 0 0 1-1.06-1.061 4.5 4.5 0 0 0 0-6.364.75.75 0 0 1 0-1.06Z" />
+                                        </svg>
+                                        <span id="tts-status-text">Voice Guide Off</span>
+                                    </button>
+                                    
+                                    <button onclick="app.stopARAssessment()" class="flex-grow py-2 px-4 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition">
+                                        Stop AR Tracking
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

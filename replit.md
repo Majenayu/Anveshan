@@ -216,7 +216,22 @@ finalScore = (overallScore / (checks * 25)) * 100
   - **Security**: Removed hardcoded API keys, now uses environment variables (__gemini_api_key) only
 
 ### Recent Bug Fixes (November 6, 2025)
-- **AR Correction MIN_CONFIDENCE Fix** (Critical):
+- **AR Skeleton Drawing Fix** (Critical):
+  - Fixed runtime errors in skeleton drawing where `this.keypointIndices` and `this.SKELETON_CONNECTIONS` were undefined
+  - Changed to use module-level `keypointIndices` and `SKELETON_CONNECTIONS` constants
+  - Fixed keypoint access from `.find(k => k.id === i)` to direct array access `keypoints[i]`
+  - Added null checks for `corrections` and `affectedKeypoints` parameters to prevent crashes
+  - Skeleton now renders properly with color-coded feedback on live video feed
+- **Reference Pose Display Restoration**:
+  - Re-implemented side-by-side reference pose display in AR correction mode
+  - Shows pose name, targeted body parts, benefits, and precautions
+  - Reference panel appears automatically when user selects a pose
+- **Correction Log & Suggestions Panel Restoration**:
+  - Re-implemented detailed correction log panel with last 5 unique corrections
+  - Color-coded feedback: ✓ (green) for correct, ⚠ (yellow) for warnings, ✗ (red) for errors
+  - Auto-scrolls to latest correction for better UX
+  - Prevents duplicate logging of same correction message
+- **AR Correction MIN_CONFIDENCE Fix**:
   - Fixed bug where `this.MIN_CONFIDENCE` was undefined, causing all low-confidence keypoints to pass validation
   - Changed to module-level `MIN_CONFIDENCE` constant for proper pose detection threshold
   - Now properly filters keypoints with score < 0.3 for accurate pose feedback

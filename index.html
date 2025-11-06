@@ -177,6 +177,16 @@
         let detector = null;
         let animationFrameId = null;
         let currentPose = null; // The pose the user selects
+        
+        // --- Suggestion Stabilization Variables ---
+        let suggestionBuffer = []; // Stores recent correction messages
+        const BUFFER_SIZE = 5; // Number of frames to buffer before changing suggestion
+        let stableSuggestion = null; // Current stable suggestion being displayed
+        let correctionCounter = 0; // Frame counter for stabilization
+        
+        // --- Scoring System Variables ---
+        let poseScore = 100; // Start at perfect score
+        let scoreHistory = []; // Track score over time for averaging
 
         // Define expected body parts and confidence score threshold
         const keypointIndices = {
@@ -521,6 +531,19 @@
                     document.getElementById('reference-precaution').textContent = asana.precaution;
                 }
                 
+                // Load reference video if available
+                this.loadReferenceVideo(poseName);
+                
+                // Reset scoring system
+                poseScore = 100;
+                scoreHistory = [];
+                this.updateScore(100);
+                
+                // Reset suggestion stabilization
+                suggestionBuffer = [];
+                stableSuggestion = null;
+                correctionCounter = 0;
+                
                 // Initialize correction log
                 const correctionLog = document.getElementById('correction-log');
                 if (correctionLog) {
@@ -529,6 +552,58 @@
                 }
                 
                 this.startARAssessment();
+            },
+            
+            /**
+             * Loads reference video for the selected pose
+             */
+            loadReferenceVideo(poseName) {
+                const videoElement = document.getElementById('reference-video');
+                const placeholder = document.getElementById('reference-placeholder');
+                
+                // Map pose names to reference videos (you can expand this)
+                const videoMap = {
+                    'Tadasana': 'assets/reference_videos/WhatsApp Video 2025-11-06 at 16.58.32_d23ae766_1762435065437.mp4',
+                    'Vrikshasana': 'assets/reference_videos/WhatsApp Video 2025-11-06 at 16.59.08_8c833d43_1762435067481.mp4'
+                };
+                
+                const videoPath = videoMap[poseName];
+                
+                if (videoPath) {
+                    videoElement.src = videoPath;
+                    videoElement.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                    videoElement.play().catch(e => {
+                        console.log('Auto-play prevented, user needs to interact first');
+                    });
+                } else {
+                    videoElement.classList.add('hidden');
+                    placeholder.classList.remove('hidden');
+                }
+            },
+            
+            /**
+             * Updates the pose score display
+             */
+            updateScore(score) {
+                const scoreElement = document.getElementById('pose-score');
+                const scoreBar = document.getElementById('score-bar');
+                
+                if (scoreElement && scoreBar) {
+                    scoreElement.textContent = Math.round(score);
+                    scoreBar.style.width = `${Math.max(0, Math.min(100, score))}%`;
+                    
+                    // Change color based on score
+                    if (score >= 85) {
+                        scoreBar.className = 'bg-gradient-to-r from-green-500 to-green-400 h-3 rounded-full transition-all duration-500';
+                    } else if (score >= 70) {
+                        scoreBar.className = 'bg-gradient-to-r from-primary to-accent h-3 rounded-full transition-all duration-500';
+                    } else if (score >= 50) {
+                        scoreBar.className = 'bg-gradient-to-r from-yellow-500 to-orange-400 h-3 rounded-full transition-all duration-500';
+                    } else {
+                        scoreBar.className = 'bg-gradient-to-r from-red-500 to-red-400 h-3 rounded-full transition-all duration-500';
+                    }
+                }
             },
             
             /**
@@ -867,10 +942,13 @@
                         canvas.height = video.videoHeight;
                         
                         // Show video container
-                        document.getElementById('video-container').style.display = 'block';
-                        statusDiv.classList.add('hidden');
-                        document.getElementById('feedback-area').style.display = 'block';
-                        feedbackText.textContent = `Starting ${this.currentPose} analysis... Stand in position!`;
+                        const videoContainer = document.getElementById('video-container');
+                        const feedbackArea = document.getElementById('feedback-area');
+                        
+                        if (videoContainer) videoContainer.style.display = 'block';
+                        if (statusDiv) statusDiv.classList.add('hidden');
+                        if (feedbackArea) feedbackArea.style.display = 'block';
+                        if (feedbackText) feedbackText.textContent = `Starting ${this.currentPose} analysis... Stand in position!`;
                         
                         // Start the ML loop, passing video reference
                         this.poseDetectionFrame(video, ctx, this.detector, feedbackText);
@@ -913,23 +991,68 @@
                                 }
                             });
 
-                            // Display main feedback message
-                            feedbackText.textContent = corrections[0].message;
+                            // === STABILIZED SUGGESTIONS ===
+                            // Only update suggestion every BUFFER_SIZE frames
+                            correctionCounter++;
                             
-                            // Update feedback color (optional, based on first message)
-                            if (corrections[0].color === 'red') {
-                                feedbackText.classList.remove('text-green-400', 'text-yellow-400', 'text-gray-400');
-                                feedbackText.classList.add('text-red-400');
-                            } else if (corrections[0].color === 'yellow') {
-                                feedbackText.classList.remove('text-green-400', 'text-red-400', 'text-gray-400');
-                                feedbackText.classList.add('text-yellow-400');
-                            } else {
-                                feedbackText.classList.remove('text-red-400', 'text-yellow-400');
-                                feedbackText.classList.add('text-green-400');
+                            if (correctionCounter >= BUFFER_SIZE) {
+                                // Time to update the suggestion
+                                stableSuggestion = corrections.length > 0 ? corrections[0] : { message: "Great! Hold this pose.", color: 'green' };
+                                correctionCounter = 0; // Reset counter
                             }
                             
-                            // Log all corrections to the correction log panel
-                            this.logCorrections(corrections);
+                            // Use stable suggestion for display
+                            const displayCorrection = stableSuggestion || corrections[0] || { message: "Analyzing pose...", color: 'gray' };
+                            
+                            // Display stabilized feedback message
+                            feedbackText.textContent = displayCorrection.message;
+                            
+                            // Update feedback color based on stabilized suggestion
+                            if (displayCorrection.color === 'red') {
+                                feedbackText.classList.remove('text-green-400', 'text-yellow-400', 'text-gray-400');
+                                feedbackText.classList.add('text-red-400');
+                            } else if (displayCorrection.color === 'yellow') {
+                                feedbackText.classList.remove('text-green-400', 'text-red-400', 'text-gray-400');
+                                feedbackText.classList.add('text-yellow-400');
+                            } else if (displayCorrection.color === 'green') {
+                                feedbackText.classList.remove('text-red-400', 'text-yellow-400', 'text-gray-400');
+                                feedbackText.classList.add('text-green-400');
+                            } else {
+                                feedbackText.classList.remove('text-red-400', 'text-yellow-400', 'text-green-400');
+                                feedbackText.classList.add('text-gray-400');
+                            }
+                            
+                            // === SCORING SYSTEM ===
+                            // Calculate score based on number and severity of corrections
+                            let frameScore = 100;
+                            
+                            corrections.forEach(corr => {
+                                if (corr.color === 'red') {
+                                    frameScore -= 15; // Major error
+                                } else if (corr.color === 'yellow') {
+                                    frameScore -= 8; // Minor warning
+                                }
+                            });
+                            
+                            // Keep score between 0-100
+                            frameScore = Math.max(0, Math.min(100, frameScore));
+                            
+                            // Add to score history and calculate average
+                            scoreHistory.push(frameScore);
+                            if (scoreHistory.length > 30) { // Keep last 30 frames (about 1 second)
+                                scoreHistory.shift();
+                            }
+                            
+                            // Calculate average score for smoother display
+                            poseScore = scoreHistory.reduce((a, b) => a + b, 0) / scoreHistory.length;
+                            
+                            // Update score display
+                            this.updateScore(poseScore);
+                            
+                            // Log all corrections to the correction log panel (less frequently)
+                            if (correctionCounter % 3 === 0) { // Update log every 3 frames
+                                this.logCorrections(corrections);
+                            }
 
                         } else {
                             feedbackText.textContent = "Select a pose to begin tracking!";
@@ -1473,13 +1596,31 @@
                                 </div>
                                 
                                 <div id="reference-container" style="display: none;" class="bg-card rounded-xl border border-gray-700 shadow-md p-4">
-                                    <h3 class="text-lg font-bold text-primary mb-3">Reference Pose</h3>
-                                    <div class="flex items-center justify-center bg-gray-900 rounded-xl p-6 mb-3" style="min-height: 200px;">
-                                        <div class="text-center">
-                                            <span id="reference-emoji" class="text-8xl">🧘</span>
-                                            <p id="reference-pose-name" class="text-gray-400 mt-3 text-sm font-medium">Pose Name</p>
+                                    <h3 class="text-lg font-bold text-primary mb-3">Reference Guide</h3>
+                                    
+                                    <!-- Reference Video or Image -->
+                                    <div id="reference-media-container" class="bg-gray-900 rounded-xl overflow-hidden mb-3" style="min-height: 200px;">
+                                        <video id="reference-video" loop muted playsinline class="w-full h-full object-cover hidden rounded-xl"></video>
+                                        <div id="reference-placeholder" class="flex items-center justify-center p-6" style="min-height: 200px;">
+                                            <div class="text-center">
+                                                <span id="reference-emoji" class="text-8xl">🧘</span>
+                                                <p id="reference-pose-name" class="text-gray-400 mt-3 text-sm font-medium">Pose Name</p>
+                                            </div>
                                         </div>
                                     </div>
+                                    
+                                    <!-- Pose Score Display -->
+                                    <div class="mb-3 p-3 bg-gradient-to-r from-primary/20 to-accent/20 rounded-xl border border-primary/40">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm font-bold text-gray-200">Pose Accuracy</span>
+                                            <span id="pose-score" class="text-2xl font-extrabold text-accent">100</span>
+                                        </div>
+                                        <div class="w-full bg-gray-700 rounded-full h-3 mt-2">
+                                            <div id="score-bar" class="bg-gradient-to-r from-primary to-accent h-3 rounded-full transition-all duration-500" style="width: 100%"></div>
+                                        </div>
+                                        <p class="text-xs text-gray-400 mt-1">Hold the pose correctly to maintain your score!</p>
+                                    </div>
+                                    
                                     <div class="text-xs text-gray-500 space-y-1">
                                         <p><strong class="text-gray-400">Target:</strong> <span id="reference-targeted">Body parts</span></p>
                                         <p><strong class="text-gray-400">Benefits:</strong> <span id="reference-benefits">Benefits</span></p>

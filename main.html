@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUNDAY- YOGA Wellness Platform</title>
+    <title>AsanaMind- YOGA Wellness Platform</title>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.13.0/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection@2.0.0/dist/pose-detection.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
@@ -155,7 +155,7 @@
     
     <div id="app" class="w-full max-w-4xl p-4 md:p-8">
         <header class="text-center mb-6 relative">
-            <h1 class="text-5xl font-extrabold text-primary tracking-tight">SUNDAY</h1>
+            <h1 class="text-5xl font-extrabold text-primary tracking-tight">AsanaMind</h1>
             <p class="text-gray-400 mt-1 text-sm md:text-base">Your Holistic Yoga & Wellness Platform</p>
             
             <a href="/profile" class="absolute top-4 right-0 md:right-4 flex items-center space-x-2 text-sm px-3 py-2 rounded-xl transition shadow-md bg-primary hover:bg-secondary text-white">
@@ -236,7 +236,7 @@
 
         // --- API Configuration and Helper (Moved outside app object) ---
         const GEMINI_MODEL = "gemini-2.5-flash-preview-05-20";
-        const VIRTUAL_ASSISTANT_SYSTEM_PROMPT = "You are SUNDAY, a supportive, knowledgeable, and certified yoga and wellness assistant. Your tone is calming and encouraging. Provide concise, helpful answers. For yoga pose questions, include the Sanskrit name and a brief description of the benefit. You have access to real-time information. Always format your advice clearly using simple markdown (bold, lists).";
+        const VIRTUAL_ASSISTANT_SYSTEM_PROMPT = "You are AsanaMind, a supportive, knowledgeable, and certified yoga and wellness assistant. Your tone is calming and encouraging. Provide concise, helpful answers. For yoga pose questions, include the Sanskrit name and a brief description of the benefit. You have access to real-time information. Always format your advice clearly using simple markdown (bold, lists).";
 
         /**
          * Calls the Gemini API for the Virtual Assistant feature.
@@ -631,7 +631,7 @@
                 // Subtitle
                 ctx.fillStyle = '#FFEB3B';
                 ctx.font = '32px Inter, sans-serif';
-                ctx.fillText('SUNDAY Yoga & Wellness Platform', canvas.width / 2, 240);
+                ctx.fillText('AsanaMind Yoga & Wellness Platform', canvas.width / 2, 240);
                 
                 // Body text
                 ctx.fillStyle = '#E0E0E0';
@@ -667,14 +667,14 @@
                 
                 ctx.fillStyle = '#E0E0E0';
                 ctx.font = 'italic 22px Inter, sans-serif';
-                ctx.fillText('SUNDAY Platform', canvas.width / 2, 835);
+                ctx.fillText('AsanaMind Platform', canvas.width / 2, 835);
                 
                 // Convert to download
                 canvas.toBlob((blob) => {
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `SUNDAY_Certificate_${Date.now()}.png`;
+                    a.download = `AsanaMind_Certificate_${Date.now()}.png`;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
@@ -1717,7 +1717,7 @@
                 }
                 
                 this.contentEl.innerHTML = `
-                    <h2 class="text-3xl font-extrabold text-gray-100 mb-6 border-b pb-3 border-gray-700">${this.views[viewKey]?.name || 'SUNDAY'}</h2>
+                    <h2 class="text-3xl font-extrabold text-gray-100 mb-6 border-b pb-3 border-gray-700">${this.views[viewKey]?.name || 'AsanaMind'}</h2>
                     ${contentHTML}
                 `;
             },
@@ -2134,7 +2134,7 @@
                 ctx.fillStyle = '#42A5F5';
                 ctx.font = 'bold 48px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText('SUNDAY Yoga Certification', 400, 100);
+                ctx.fillText('AsanaMind Yoga Certification', 400, 100);
                 
                 ctx.fillStyle = '#E0E0E0';
                 ctx.font = '24px Arial';
@@ -2145,7 +2145,7 @@
                 
                 ctx.font = '24px Arial';
                 ctx.fillText('has successfully completed the', 400, 320);
-                ctx.fillText('SUNDAY Yoga Course', 400, 360);
+                ctx.fillText('AsanaMind Yoga Course', 400, 360);
                 
                 ctx.font = '18px Arial';
                 ctx.fillStyle = '#9CA3AF';
@@ -2158,7 +2158,7 @@
                 ctx.fillText('Tadasana • Namastey • Vrikshasana', 400, 545);
                 
                 const link = document.createElement('a');
-                link.download = 'SUNDAY_Yoga_Certificate.png';
+                link.download = 'AsanaMind_Yoga_Certificate.png';
                 link.href = canvas.toDataURL();
                 link.click();
             },

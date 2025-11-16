@@ -236,7 +236,7 @@
 
         // --- API Configuration and Helper (Moved outside app object) ---
         const GEMINI_MODEL = "gemini-2.5-flash-preview-05-20";
-        const VIRTUAL_ASSISTANT_SYSTEM_PROMPT = "You are AsanaMind, a supportive, knowledgeable, and certified yoga and wellness assistant. Your tone is calming and encouraging. Provide concise, helpful answers. For yoga pose questions, include the Sanskrit name and a brief description of the benefit. You have access to real-time information. Always format your advice clearly using simple markdown (bold, lists).";
+        const VIRTUAL_ASSISTANT_SYSTEM_PROMPT = "You are sunday, a supportive, knowledgeable, and certified yoga and wellness assistant. Your tone is calming and encouraging. Provide concise, helpful answers. For yoga pose questions, include the Sanskrit name and a brief description of the benefit. You have access to real-time information. Always format your advice clearly using simple markdown (bold, lists).";
 
         /**
          * Calls the Gemini API for the Virtual Assistant feature.
@@ -631,7 +631,7 @@
                 // Subtitle
                 ctx.fillStyle = '#FFEB3B';
                 ctx.font = '32px Inter, sans-serif';
-                ctx.fillText('AsanaMind Yoga & Wellness Platform', canvas.width / 2, 240);
+                ctx.fillText('sunday Yoga & Wellness Platform', canvas.width / 2, 240);
                 
                 // Body text
                 ctx.fillStyle = '#E0E0E0';
@@ -667,7 +667,7 @@
                 
                 ctx.fillStyle = '#E0E0E0';
                 ctx.font = 'italic 22px Inter, sans-serif';
-                ctx.fillText('AsanaMind Platform', canvas.width / 2, 835);
+                ctx.fillText('sunday Platform', canvas.width / 2, 835);
                 
                 // Convert to download
                 canvas.toBlob((blob) => {
@@ -1717,7 +1717,7 @@
                 }
                 
                 this.contentEl.innerHTML = `
-                    <h2 class="text-3xl font-extrabold text-gray-100 mb-6 border-b pb-3 border-gray-700">${this.views[viewKey]?.name || 'AsanaMind'}</h2>
+                    <h2 class="text-3xl font-extrabold text-gray-100 mb-6 border-b pb-3 border-gray-700">${this.views[viewKey]?.name || 'sunday'}</h2>
                     ${contentHTML}
                 `;
             },

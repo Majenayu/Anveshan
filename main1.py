@@ -40,14 +40,14 @@ class AIVoiceAssistant:
         self.status_file = "sunday_status.json"
         self.conv_log_file = "conversation_log.txt"
         self.listening = True
-        self.wake_word = "sunday"
+        self.wake_word = "AsanaMind"
         self.consecutive_failures = 0
         self.max_failures = 5
         
         # Simple TTS solution from under_ai.py
         self.setup_tts()
         
-        self.log_conversation("System", "Sunday AI starting with simple TTS system")
+        self.log_conversation("System", "AsanaMind AI starting with simple TTS system")
 
         # Initialize speech recognition from under_ai.py
         self.recognizer = sr.Recognizer()
@@ -83,7 +83,7 @@ class AIVoiceAssistant:
         listen_thread.start()
 
         self.write_status('ready', '', '')
-        self.speak("Hello! I'm Sunday, your yoga assistant. I'm here and ready to help you with your wellness journey. Just say 'Sunday' followed by what you'd like to do!")
+        self.speak("Hello! I'm AsanaMind, your yoga assistant. I'm here and ready to help you with your wellness journey. Just say 'AsanaMind' followed by what you'd like to do!")
 
     def setup_tts(self):
         """Simple TTS setup that just works from under_ai.py"""
@@ -389,15 +389,15 @@ class AIVoiceAssistant:
             "option": "asana",
             "rout": "routine",
             "assist": "assistant",
-            "santa": "sunday",
-            "sandesh": "sunday",
+            "santa": "AsanaMind",
+            "sandesh": "AsanaMind",
             "vr collection": "ar correction",
             "vr": "ar",
             "virtual": "assistant",
             "shut down": "stop",
             "shutdown": "stop",
             "go back to home": "home",
-            "activate sunday": "test",
+            "activate AsanaMind": "test",
             "yoga poses": "asana",
             "posture correction": "ar correction",
             "camera mode": "ar correction",
@@ -495,7 +495,7 @@ class AIVoiceAssistant:
             responses = [
                 "I'm here and fully operational! Ready to help you with yoga poses, routines, or answer any wellness questions.",
                 "System check complete! Everything is working perfectly. Your personal yoga assistant is at your service!",
-                "I'm running smoothly! Try saying things like 'Sunday open pose library' or 'Sunday start posture correction'."
+                "I'm running smoothly! Try saying things like 'AsanaMind open pose library' or 'AsanaMind start posture correction'."
             ]
             self.speak(random.choice(responses))
 
@@ -503,7 +503,7 @@ class AIVoiceAssistant:
             self.speak("You're very welcome! I'm always happy to help with your yoga practice.")
 
         elif any(word in command for word in ['hello', 'hi', 'hey']):
-            self.speak("Hello there! I'm Sunday, your yoga and wellness assistant. How can I help you today?")
+            self.speak("Hello there! I'm AsanaMind, your yoga and wellness assistant. How can I help you today?")
 
         elif any(word in command for word in ['stop', 'quit', 'exit', 'shutdown', 'goodbye']):
             self.speak("Thank you for your practice today! Remember to stay hydrated and listen to your body. Goodbye!")
@@ -565,7 +565,7 @@ class AIVoiceAssistant:
 
     def listen_loop(self):
         """Main listening loop with improved responsiveness from under_ai.py"""
-        self.speak("I'm listening for you. Just say 'Sunday' when you need me!")
+        self.speak("I'm listening for you. Just say 'AsanaMind' when you need me!")
         
         while self.listening:
             try:
@@ -599,11 +599,11 @@ class AIVoiceAssistant:
                                 else:
                                     self.speak("I didn't catch that clearly. Feel free to try again when you're ready.")
                             else:
-                                self.speak("I'm here when you need me. Just say 'Sunday' followed by your request.")
+                                self.speak("I'm here when you need me. Just say 'AsanaMind' followed by your request.")
                         else:
                             # Heard something but not wake word
-                            if any(word in text for word in ['sunday', 'sandi', 'help', 'assistant']):
-                                self.speak("Did you call me? I heard something similar to Sunday. If you need me, just say 'Sunday' clearly.")
+                            if any(word in text for word in ['AsanaMind', 'sandi', 'help', 'assistant']):
+                                self.speak("Did you call me? I heard something similar to AsanaMind. If you need me, just say 'AsanaMind' clearly.")
                     else:
                         self.consecutive_failures += 1
                         if self.consecutive_failures >= self.max_failures:
@@ -644,14 +644,14 @@ def run_server():
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     Handler = MyHTTPRequestHandler
     with ReusableTCPServer(("0.0.0.0", PORT), Handler) as httpd:
-        print(f"✓ SUNDAY server running on http://0.0.0.0:{PORT}")
+        print(f"✓ AsanaMind server running on http://0.0.0.0:{PORT}")
         print("✓ Voice + AR merged—mic tuned!")
         httpd.serve_forever()
 
 if __name__ == "__main__":
-    print("🚀 Starting SUNDAY AI Voice Assistant (Simple TTS Version)...")
+    print("🚀 Starting AsanaMind AI Voice Assistant (Simple TTS Version)...")
     print("Make sure you have Chrome installed and microphone permissions granted.")
-    print("Say 'Sunday' clearly to activate the assistant.")
+    print("Say 'AsanaMind' clearly to activate the assistant.")
     
     # Start server thread
     server_thread = threading.Thread(target=run_server, daemon=True)

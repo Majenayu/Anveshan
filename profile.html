@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SUNDAY - Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -34,7 +34,7 @@
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
         }
-        /* PERFECTED GitHub Contribution Graph: Green mark now in Nov 2025 (week 53, row 7) */
+        /* GitHub Contribution Graph - Responsive */
         .contribution-graph {
             display: grid;
             grid-template-columns: 30px repeat(53, 12px); /* Left labels + 53 weeks */
@@ -49,6 +49,33 @@
             max-width: 100%;
             justify-items: stretch;
             align-items: stretch;
+            overflow-x: auto;
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .contribution-graph {
+                grid-template-columns: 20px repeat(53, 8px);
+                grid-template-rows: repeat(7, 8px) 20px;
+                padding: 5px;
+                font-size: 9px;
+            }
+            .graph-day {
+                width: 8px !important;
+                height: 8px !important;
+            }
+            .graph-label, .graph-month {
+                font-size: 9px !important;
+            }
+            body {
+                padding: 0.5rem !important;
+            }
+            nav h1 {
+                font-size: 1.25rem !important;
+            }
+            .max-w-4xl {
+                padding: 0 !important;
+            }
         }
         .graph-day {
             width: 12px;
@@ -160,7 +187,26 @@
         function renderProfile() {
             if (!profileData) return;
 
-            // User Info
+            // User Info - Fix date parsing
+            let joinedDate;
+            if (profileData.created_at) {
+                try {
+                    const dateObj = new Date(profileData.created_at);
+                    // Check if date is valid
+                    if (!isNaN(dateObj.getTime()) && dateObj.getFullYear() > 2020) {
+                        joinedDate = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                    } else {
+                        // If invalid, use current date as fallback
+                        joinedDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                    }
+                } catch (e) {
+                    joinedDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                }
+            } else {
+                // If created_at is null/undefined, use current date
+                joinedDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            }
+            
             document.getElementById('profileInfo').innerHTML = `
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -168,8 +214,8 @@
                         <p><strong>Email:</strong> ${profileData.email}</p>
                     </div>
                     <div>
-                        <p><strong>Total Active Days:</strong> ${profileData.total_active_days}</p>
-                        <p><strong>Joined:</strong> ${new Date(profileData.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+                        <p><strong>Total Active Days:</strong> ${profileData.total_active_days || 0}</p>
+                        <p><strong>Joined:</strong> ${joinedDate}</p>
                     </div>
                 </div>
             `;
@@ -224,10 +270,18 @@
             const graph = document.getElementById('contributionGraph');
             graph.innerHTML = '';
 
-            // FIXED: Start from Monday Nov 11, 2024 for 53 weeks to cover up to Nov 2025
-            const startDate = new Date(2024, 10, 11); // Nov 11, 2024 Monday
+            // Use actual current date instead of hardcoded dates
+            const now = new Date();
             const totalWeeks = 53;
-            const now = new Date(2025, 10, 16); // Nov 16, 2025
+            
+            // Calculate start date: 53 weeks ago from today
+            const startDate = new Date(now);
+            startDate.setDate(startDate.getDate() - (totalWeeks * 7));
+            
+            // Adjust to start on Monday
+            const dayOfWeek = startDate.getDay();
+            const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            startDate.setDate(startDate.getDate() + daysToMonday);
 
             // FIXED: Day labels (M/W/F on rows 1,3,5)
             const dayRows = [1, 3, 5];
@@ -241,30 +295,28 @@
                 graph.appendChild(labelDiv);
             });
 
-            // FIXED: Month labels hardcoded to match screenshot positions (Nov left to Nov right)
-            const monthPositions = [
-                { name: 'Nov', col: 2 }, // Nov 2024 (cols 2-5)
-                { name: 'Dec', col: 6 },
-                { name: 'Jan', col: 10 },
-                { name: 'Feb', col: 14 },
-                { name: 'Mar', col: 18 },
-                { name: 'Apr', col: 22 },
-                { name: 'May', col: 26 },
-                { name: 'Jun', col: 30 },
-                { name: 'Jul', col: 34 },
-                { name: 'Aug', col: 38 },
-                { name: 'Sep', col: 42 },
-                { name: 'Oct', col: 46 },
-                { name: 'Nov', col: 50 } // Nov 2025 (cols 50-53)
-            ];
-            monthPositions.forEach(({ name, col }) => {
-                const monthDiv = document.createElement('div');
-                monthDiv.className = 'graph-month';
-                monthDiv.textContent = name;
-                monthDiv.style.gridRow = 8;
-                monthDiv.style.gridColumn = col;
-                graph.appendChild(monthDiv);
-            });
+            // Generate month labels dynamically based on start date
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const monthsShown = new Set();
+            let lastMonth = -1;
+            
+            for (let week = 0; week < totalWeeks; week++) {
+                const weekDate = new Date(startDate);
+                weekDate.setDate(weekDate.getDate() + (week * 7));
+                const month = weekDate.getMonth();
+                
+                // Show month label at the start of each new month
+                if (month !== lastMonth && !monthsShown.has(`${month}-${week}`)) {
+                    const monthDiv = document.createElement('div');
+                    monthDiv.className = 'graph-month';
+                    monthDiv.textContent = monthNames[month];
+                    monthDiv.style.gridRow = 8;
+                    monthDiv.style.gridColumn = week + 2;
+                    graph.appendChild(monthDiv);
+                    monthsShown.add(`${month}-${week}`);
+                    lastMonth = month;
+                }
+            }
 
             // FIXED: Generate cells: Advance date by 1 day per cell, row=day of week, col=week+1
             let currentDate = new Date(startDate);

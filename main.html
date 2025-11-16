@@ -1167,7 +1167,7 @@
                 // Configure video constraints for better mobile support
                 const constraints = {
                     video: {
-                        facingMode: "user"// Use rear camera on mobile
+                        facingMode: isMobile ? { ideal: "environment" } : "user",
                         width: { ideal: isMobile ? 1280 : 640 },
                         height: { ideal: isMobile ? 720 : 480 },
                         aspectRatio: { ideal: 16/9 }

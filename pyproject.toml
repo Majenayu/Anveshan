@@ -1,0 +1,11 @@
+[project]
+name = "repl-nix-workspace"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.11"
+dependencies = [
+    "pyaudio>=0.2.14",
+    "pyttsx3>=2.99",
+    "selenium>=4.38.0",
+    "speechrecognition>=3.14.3",
+]

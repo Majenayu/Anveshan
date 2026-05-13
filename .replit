@@ -1,0 +1,64 @@
+modules = ["web", "python-3.11"]
+[agent]
+expertMode = true
+integrations = ["javascript_gemini:1.0.0"]
+
+[nix]
+channel = "stable-25_05"
+packages = ["espeak-ng", "geckodriver", "portaudio"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "sunday-yoga-server"
+
+[[workflows.workflow]]
+name = "sunday-yoga-server"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python server.py"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 32883
+externalPort = 5173
+
+[[ports]]
+localPort = 34541
+externalPort = 3001
+
+[[ports]]
+localPort = 36619
+externalPort = 3002
+
+[[ports]]
+localPort = 37969
+externalPort = 3003
+
+[[ports]]
+localPort = 40923
+externalPort = 4200
+
+[[ports]]
+localPort = 41549
+externalPort = 3000
+
+[[ports]]
+localPort = 45479
+externalPort = 5000

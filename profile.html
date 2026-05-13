@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Profile · Sunday</title>
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#F5F2EB" />
+    <link rel="apple-touch-icon" href="/assets/logo.png" />
+    <link rel="icon" type="image/png" href="/assets/logo.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+    :root {
+        --bg:#F5F2EB; --surface:#FFFFFF; --surface-2:#EEE9DE; --surface-3:#E0D9C8; --border:#D4CCB8;
+        --text-1:#14120E; --text-2:#4A453B; --text-3:#7A7364; --text-4:#A8A294;
+        --primary:#0F3D2E; --primary-2:#1F5A44; --primary-3:#6FA089; --primary-4:#C7DBCE;
+        --accent:#C2552F; --accent-soft:#F6DACB; --highlight:#E0A23F; --highlight-2:#F3D58C;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text-1);min-height:100vh;
+        font-family:"Inter",system-ui,sans-serif;font-size:16px;line-height:1.6;
+        -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    a{color:inherit;text-decoration:none}
+    .display{font-family:"Fraunces",serif;letter-spacing:-0.02em}
+    .kicker{font-family:"Inter",sans-serif;font-weight:500;font-size:11px;line-height:14px;letter-spacing:0.22em;text-transform:uppercase}
+
+    /* Top nav */
+    .topbar{position:sticky;top:0;z-index:40;background:rgba(245,242,235,0.92);backdrop-filter:blur(14px);
+        border-bottom:1px solid rgba(26,24,20,0.06)}
+    .topbar-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between}
+    @media(min-width:768px){.topbar-inner{padding:0 32px}}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand-dot{width:28px;height:28px;border-radius:999px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:var(--bg);font-family:"Fraunces",serif;font-size:15px;font-weight:500}
+    .brand-word{font-family:"Fraunces",serif;font-size:19px;font-weight:500;letter-spacing:-0.01em;color:var(--text-1)}
+    .nav-links{display:none;align-items:center;gap:4px}
+    @media(min-width:768px){.nav-links{display:flex}}
+    .nav-link{padding:10px 18px;border-radius:999px;font-size:14px;font-weight:400;color:var(--text-3)}
+    .nav-link.active{color:var(--text-1);font-weight:500;background:rgba(15,61,46,0.06)}
+    .nav-right{display:flex;align-items:center;gap:12px}
+    .signout{display:none;font-size:13px;color:var(--text-3);padding:8px 14px}
+    @media(min-width:768px){.signout{display:inline}}
+    .avatar{width:36px;height:36px;border-radius:999px;background:var(--primary);color:var(--bg);display:flex;align-items:center;justify-content:center;font-family:"Fraunces",serif;font-size:15px;font-weight:500}
+
+    /* Page */
+    .page{max-width:1200px;margin:0 auto;padding:40px 24px 80px}
+    @media(min-width:768px){.page{padding:60px 32px 80px}}
+
+    /* Header row */
+    .hero{display:grid;grid-template-columns:1fr;gap:24px;align-items:end}
+    @media(min-width:900px){.hero{grid-template-columns:1fr 380px}}
+    .identity{display:flex;align-items:center;gap:18px}
+    @media(min-width:768px){.identity{gap:24px}}
+    .identity-av{width:88px;height:88px;border-radius:999px;background:var(--primary);color:var(--highlight);display:flex;align-items:center;justify-content:center;font-family:"Fraunces",serif;font-size:40px;font-weight:400;flex-shrink:0}
+    @media(min-width:768px){.identity-av{width:120px;height:120px;font-size:52px}}
+    .identity h1{font-family:"Fraunces",serif;font-size:44px;font-weight:300;letter-spacing:-0.03em;line-height:1;color:var(--text-1);margin:6px 0 0}
+    @media(min-width:768px){.identity h1{font-size:72px}}
+    .identity-meta{color:var(--text-3);font-size:14px;margin-top:8px}
+    @media(min-width:768px){.identity-meta{font-size:15px}}
+
+    .level-card{background:var(--primary);color:var(--bg);border-radius:20px;padding:22px;display:flex;flex-direction:column;justify-content:center;min-height:120px}
+    .level-n{font-family:"Fraunces",serif;font-size:36px;font-weight:300;letter-spacing:-0.02em;margin-top:4px}
+    @media(min-width:768px){.level-n{font-size:40px}}
+
+    /* KPI grid */
+    .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:32px}
+    @media(min-width:768px){.kpis{grid-template-columns:repeat(4,1fr);gap:24px;margin-top:40px}}
+    .kpi{background:var(--surface-2);border-radius:20px;padding:18px;min-height:120px;display:flex;flex-direction:column;justify-content:space-between}
+    @media(min-width:768px){.kpi{padding:24px;min-height:160px}}
+    .kpi-n{font-family:"Fraunces",serif;font-size:40px;font-weight:300;color:var(--text-1);line-height:1;letter-spacing:-0.02em}
+    @media(min-width:768px){.kpi-n{font-size:56px}}
+
+    /* Charts row */
+    .charts{display:grid;grid-template-columns:1fr;gap:16px;margin-top:24px}
+    @media(min-width:900px){.charts{grid-template-columns:800fr 400fr;gap:24px;margin-top:32px}}
+
+    .chart-card{background:var(--surface-2);border-radius:24px;padding:22px;min-height:280px}
+    @media(min-width:768px){.chart-card{padding:28px;min-height:360px}}
+    .chart-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .chart-title{font-family:"Fraunces",serif;font-size:22px;font-weight:400;margin:4px 0 0;color:var(--text-1)}
+    @media(min-width:768px){.chart-title{font-size:26px}}
+
+    .seg{display:flex;gap:4px;background:var(--bg);border-radius:999px;padding:4px}
+    .seg span{padding:7px 14px;border-radius:999px;font-size:12px;font-weight:500;color:var(--text-3);cursor:pointer}
+    .seg span.active{background:var(--primary);color:var(--bg)}
+
+    .bars{display:flex;align-items:flex-end;gap:12px;height:180px;margin-top:20px;padding:0 4px}
+    @media(min-width:768px){.bars{gap:24px;height:220px}}
+    .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}
+    .bar{width:24px;border-radius:6px;background:var(--primary-3);transition:height .5s ease}
+    @media(min-width:768px){.bar{width:40px}}
+    .bar.accent{background:var(--accent)}
+    .bar-label{color:var(--text-3);font-family:"Inter",sans-serif;font-weight:500;font-size:10px;letter-spacing:0.18em;text-transform:uppercase}
+
+    .dist-card{background:var(--primary);color:var(--bg);border-radius:24px;padding:22px}
+    @media(min-width:768px){.dist-card{padding:28px}}
+    .dist-title{font-family:"Fraunces",serif;font-size:22px;font-weight:400;margin:4px 0 0}
+    @media(min-width:768px){.dist-title{font-size:24px}}
+    .dist-row{margin-top:16px}
+    .dist-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+    .dist-pct{color:var(--highlight)}
+    .dist-track{height:6px;background:var(--primary-2);border-radius:3px;overflow:hidden}
+    .dist-fill{height:100%;background:var(--highlight);border-radius:3px;transition:width .5s}
+
+    /* Heatmap */
+    .heat-wrap{background:var(--surface-2);border-radius:24px;padding:22px;margin-top:24px}
+    @media(min-width:768px){.heat-wrap{padding:28px;margin-top:32px}}
+    .heat-grid{display:grid;grid-template-rows:repeat(7,10px);grid-auto-flow:column;grid-auto-columns:10px;gap:3px;overflow-x:auto;padding-bottom:8px}
+    .heat-cell{width:10px;height:10px;border-radius:2.5px;background:var(--surface-3)}
+    .heat-1{background:rgba(74,107,77,0.4)}.heat-2{background:rgba(74,107,77,0.6)}
+    .heat-3{background:rgba(74,107,77,0.8)}.heat-4{background:#4A6B4D}
+    .heat-legend{display:flex;align-items:center;gap:6px;margin-top:10px;color:var(--text-3)}
+    .heat-legend span{font-size:10px;font-family:"Inter";font-weight:500;letter-spacing:0.18em;text-transform:uppercase}
+    .heat-legend-ramp{display:flex;gap:3px;margin:0 8px}
+
+    /* Achievements */
+    .ach-wrap{background:var(--surface-2);border-radius:24px;padding:22px;margin-top:24px}
+    @media(min-width:768px){.ach-wrap{padding:28px;margin-top:32px}}
+    .ach-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+    .ach-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    @media(min-width:640px){.ach-grid{grid-template-columns:repeat(4,1fr);gap:12px}}
+    @media(min-width:1000px){.ach-grid{grid-template-columns:repeat(8,1fr)}}
+    .badge{border-radius:20px;padding:16px;min-height:140px;display:flex;flex-direction:column;justify-content:space-between}
+    @media(min-width:768px){.badge{min-height:150px;padding:18px}}
+    .badge-earned{background:var(--primary);color:var(--bg)}
+    .badge-locked{background:var(--surface-3);color:var(--text-4)}
+    .badge-star{font-family:"Fraunces",serif;font-weight:300;font-size:36px;line-height:1}
+    @media(min-width:768px){.badge-star{font-size:44px}}
+    .badge-earned .badge-star{color:var(--highlight)}
+    .badge-locked .badge-star{color:var(--text-4)}
+    .badge-label{font-size:13px;font-weight:600}
+
+    footer{max-width:1200px;margin:40px auto 0;padding:24px;border-top:1px solid rgba(26,24,20,0.06);display:flex;align-items:center;justify-content:space-between;color:var(--text-4);font-size:12px;flex-wrap:wrap;gap:12px}
+    footer .foot-links{display:flex;gap:24px}
+    </style>
+    <script src="/static/voice-kb.js"></script>
+    <script src="/static/practice-flow.js"></script>
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="/home" class="brand">
+                <span class="brand-dot">s</span>
+                <span class="brand-word">sunday</span>
+            </a>
+            <nav class="nav-links">
+                <a href="/home" class="nav-link">Today</a>
+                <a href="/home#library" class="nav-link">Library</a>
+                <a href="/home#practice" class="nav-link">Practice</a>
+                <a href="/profile" class="nav-link active">Profile</a>
+            </nav>
+            <div class="nav-right">
+                <button id="commands-btn" onclick="openCommandLibrary()" title="Command library" aria-label="Show voice commands"
+                    style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:9999px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);cursor:pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px">
+                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-.75 11.25a.75.75 0 0 0 1.5 0v-.25c0-.32.116-.55.302-.713a3.375 3.375 0 1 0-4.86-4.638.75.75 0 0 0 1.265.811 1.875 1.875 0 1 1 2.7 2.58c-.478.42-.907.988-.907 1.71v.5ZM12 17.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
+                <button id="voice-toggle" onclick="toggleProfileVoice()" title="Voice assistant" aria-label="Toggle voice assistant"
+                    style="display:flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:9999px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);font-size:12px;font-weight:500;cursor:pointer">
+                    <svg id="mic-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px">
+                        <path fill-rule="evenodd" d="M12 1.5a4.5 4.5 0 0 0-4.5 4.5v6a4.5 4.5 0 1 0 9 0V6A4.5 4.5 0 0 0 12 1.5ZM4.5 10.5a.75.75 0 0 0-1.5 0v1.5a9 9 0 0 0 8.25 8.972v2.278a.75.75 0 0 0 1.5 0v-2.278A9 9 0 0 0 21 12v-1.5a.75.75 0 0 0-1.5 0V12a7.5 7.5 0 0 1-15 0v-1.5Z" clip-rule="evenodd" />
+                    </svg>
+                    <span id="mic-status-text">Voice</span>
+                </button>
+                <a href="/logout" class="signout">Sign out</a>
+                <span class="avatar" id="avatar-initial">A</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="page">
+        <section class="hero">
+            <div class="identity">
+                <div class="identity-av" id="identity-initial">A</div>
+                <div>
+                    <span class="kicker" style="color:var(--text-3)">Practitioner · since <span id="since">—</span></span>
+                    <h1 id="identity-name">Practitioner</h1>
+                    <p class="identity-meta" id="identity-email">—</p>
+                </div>
+            </div>
+            <div class="level-card">
+                <span class="kicker" style="color:var(--highlight)">Current level</span>
+                <div class="level-n" id="level-name">Novice</div>
+                <span class="kicker" id="level-hint" style="color:var(--primary-3);margin-top:6px;display:block">Practice daily to advance</span>
+            </div>
+        </section>
+
+        <section class="kpis">
+            <div class="kpi"><span class="kicker" style="color:var(--accent)">Total sessions</span><span class="kpi-n" id="kpi-sessions">0</span></div>
+            <div class="kpi"><span class="kicker" style="color:var(--accent)">Active days</span><span class="kpi-n" id="kpi-days">0</span></div>
+            <div class="kpi"><span class="kicker" style="color:var(--accent)">Best streak</span><span class="kpi-n" id="kpi-streak">0</span></div>
+            <div class="kpi"><span class="kicker" style="color:var(--accent)">Poses learned</span><span class="kpi-n" id="kpi-poses">0</span></div>
+        </section>
+
+        <section class="charts">
+            <div class="chart-card">
+                <div class="chart-head">
+                    <div>
+                        <span class="kicker" style="color:var(--accent)">Minutes of practice</span>
+                        <h3 class="chart-title">Last 8 weeks</h3>
+                    </div>
+                    <div class="seg"><span class="active">Week</span><span>Month</span><span>Year</span></div>
+                </div>
+                <div id="bars" class="bars"></div>
+            </div>
+            <div class="dist-card">
+                <span class="kicker" style="color:var(--highlight)">Pose distribution</span>
+                <h3 class="dist-title">What you return to</h3>
+                <div id="dist-list" style="margin-top:14px">
+                    <p style="color:var(--primary-3);font-size:13px;margin:0">Complete your first pose to see this.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="heat-wrap">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap">
+                <div>
+                    <span class="kicker" style="color:var(--accent)">Rhythm</span>
+                    <h3 class="chart-title" style="font-size:22px">Your year of practice</h3>
+                </div>
+                <div class="heat-legend">
+                    <span>Less</span>
+                    <div class="heat-legend-ramp">
+                        <div class="heat-cell"></div><div class="heat-cell heat-1"></div><div class="heat-cell heat-2"></div><div class="heat-cell heat-3"></div><div class="heat-cell heat-4"></div>
+                    </div>
+                    <span>More</span>
+                </div>
+            </div>
+            <div id="heatmap" class="heat-grid"></div>
+        </section>
+
+        <section class="ach-wrap" id="progress-section">
+            <div class="ach-head">
+                <div>
+                    <span class="kicker" style="color:var(--accent)">Progress</span>
+                    <h3 class="chart-title" style="font-size:22px">Your 30-day alignment</h3>
+                </div>
+                <span class="kicker" style="color:var(--text-3)" id="progress-meta">Per-pose trend</span>
+            </div>
+            <div id="progress-graphs" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px"></div>
+            <div style="margin-top:20px">
+                <span class="kicker" style="color:var(--accent)">Focus areas</span>
+                <p id="focus-areas" style="color:var(--text-2);font-size:14px;margin-top:6px">Practise a few poses to see your focus areas.</p>
+            </div>
+        </section>
+
+        <section class="ach-wrap">
+            <div class="ach-head">
+                <div>
+                    <span class="kicker" style="color:var(--accent)">Achievements</span>
+                    <h3 class="chart-title" style="font-size:22px">Small victories</h3>
+                </div>
+                <span class="kicker" style="color:var(--text-3)" id="ach-meta">0 of 8 earned</span>
+            </div>
+            <div id="ach-grid" class="ach-grid"></div>
+        </section>
+    </div>
+
+    <footer>
+        <span class="kicker">© Sunday · made with care for everyday practitioners</span>
+        <div class="foot-links"><span>Privacy</span><span>About</span><span>Help</span></div>
+    </footer>
+
+    <script>
+    (async function(){
+        const $ = (id) => document.getElementById(id);
+        let data;
+        try {
+            const r = await fetch('/api/profile', { credentials:'same-origin' });
+            data = r.ok ? await r.json() : null;
+        } catch(_) {}
+        if (!data) data = { name:'Practitioner', email:'', activity_log:[], completed_asanas:{}, total_active_days:0, created_at:null };
+
+        const initial = (data.name || 'A').trim().charAt(0).toUpperCase();
+        $('avatar-initial').textContent = initial;
+        $('identity-initial').textContent = initial;
+        $('identity-name').textContent = data.name || 'Practitioner';
+        $('identity-email').textContent = data.email || '';
+        if (data.created_at) {
+            const d = new Date(data.created_at);
+            $('since').textContent = d.toLocaleDateString('en-US', { month:'long', year:'numeric' });
+        } else {
+            $('since').textContent = 'today';
+        }
+
+        const completed = data.completed_asanas || {};
+        const total = Object.values(completed).reduce((a,b)=>a+(Number(b)||0),0);
+        const active = data.total_active_days || (data.activity_log||[]).length;
+        const learned = Object.keys(completed).length;
+
+        const days = [...(data.activity_log||[])].sort();
+        let best = 0, cur = 0, prev = null;
+        for (const d of days) {
+            const t = new Date(d);
+            if (prev && Math.round((t - prev)/86400000) === 1) cur++;
+            else cur = 1;
+            if (cur > best) best = cur;
+            prev = t;
+        }
+
+        $('kpi-sessions').textContent = total;
+        $('kpi-days').textContent = active;
+        $('kpi-streak').textContent = best;
+        $('kpi-poses').textContent = learned;
+
+        // Level progression
+        const levels = [
+            { min:0, name:'Novice', next:1, nextName:'Novice II' },
+            { min:1, name:'Novice II', next:7, nextName:'Regular I' },
+            { min:7, name:'Regular I', next:14, nextName:'Regular II' },
+            { min:14, name:'Regular II', next:30, nextName:'Expert I' },
+            { min:30, name:'Expert I', next:60, nextName:'Expert II' },
+            { min:60, name:'Expert II', next:120, nextName:'Master' },
+            { min:120, name:'Master', next:null, nextName:null },
+        ];
+        let lvl = levels[0];
+        for (const l of levels) if (active >= l.min) lvl = l;
+        $('level-name').textContent = lvl.name;
+        $('level-hint').textContent = lvl.next ? `${lvl.next - active} days to ${lvl.nextName}` : 'A lifetime of practice ahead';
+
+        // Bar chart (8 weeks)
+        const today = new Date(); today.setHours(0,0,0,0);
+        const buckets = new Array(8).fill(0);
+        const daySet = new Set(days);
+        for (let i=0; i<56; i++) {
+            const d = new Date(today); d.setDate(d.getDate()-i);
+            const ds = d.toISOString().slice(0,10);
+            if (daySet.has(ds)) {
+                const wIdx = 7 - Math.floor(i / 7);
+                if (wIdx >= 0 && wIdx < 8) buckets[wIdx] += 3; // 3 min / day
+            }
+        }
+        const max = Math.max(1, ...buckets);
+        const barsEl = $('bars');
+        for (let i = 0; i < 8; i++) {
+            const col = document.createElement('div');
+            col.className = 'bar-col';
+            const bar = document.createElement('div');
+            bar.className = 'bar' + (i === 7 ? ' accent' : '');
+            bar.style.height = `${Math.max(4, (buckets[i] / max) * 100)}%`;
+            bar.title = `${buckets[i]} min`;
+            col.appendChild(bar);
+            const label = document.createElement('span');
+            label.className = 'bar-label';
+            label.textContent = 'W' + (i + 1);
+            col.appendChild(label);
+            barsEl.appendChild(col);
+        }
+
+        // Pose distribution
+        const dist = $('dist-list');
+        if (total > 0) {
+            const entries = Object.entries(completed).sort((a,b)=>b[1]-a[1]).slice(0,5);
+            dist.innerHTML = '';
+            for (const [n, c] of entries) {
+                const pct = Math.round((c/total)*100);
+                const row = document.createElement('div');
+                row.className = 'dist-row';
+                row.innerHTML = `
+                    <div class="dist-top"><span>${n}</span><span class="dist-pct">${pct}%</span></div>
+                    <div class="dist-track"><div class="dist-fill" style="width:${pct}%"></div></div>`;
+                dist.appendChild(row);
+            }
+        }
+
+        // Heatmap
+        const heat = $('heatmap');
+        const start = new Date(today); start.setDate(start.getDate()-364);
+        start.setDate(start.getDate() - start.getDay()); // align to Sunday
+        for (let w = 0; w < 53; w++) {
+            for (let d = 0; d < 7; d++) {
+                const day = new Date(start);
+                day.setDate(day.getDate() + w*7 + d);
+                const ds = day.toISOString().slice(0,10);
+                const cell = document.createElement('span');
+                cell.className = 'heat-cell' + (daySet.has(ds) ? ' heat-4' : '');
+                cell.title = ds;
+                heat.appendChild(cell);
+            }
+        }
+
+        // Achievements
+        const badges = [
+            { t:'First steps', s:'Day one',        e: total >= 1 },
+            { t:'Week one',    s:'7-day streak',   e: best >= 7 },
+            { t:'Grounded',    s:'Tadasana mastery', e:(completed['Tadasana']||0) >= 3 },
+            { t:'Balance',     s:'Tree pose',      e:(completed['Vrikshasana']||0) >= 3 },
+            { t:'A month in',  s:'30 active days', e: active >= 30 },
+            { t:'Scholar',     s:'All beginner',   e: learned >= 10 },
+            { t:'Master',      s:'120 days',       e: active >= 120 },
+            { t:'Teacher',     s:'100 sessions',   e: total >= 100 },
+        ];
+        const ach = $('ach-grid');
+        const earned = badges.filter(b => b.e).length;
+        $('ach-meta').textContent = `${earned} of ${badges.length} earned`;
+        for (const b of badges) {
+            const el = document.createElement('div');
+            el.className = 'badge ' + (b.e ? 'badge-earned' : 'badge-locked');
+            el.innerHTML = `
+                <span class="badge-star">${b.e ? '★' : '☆'}</span>
+                <div>
+                    <div class="badge-label">${b.t}</div>
+                    <div class="kicker" style="color:${b.e ? 'var(--primary-3)' : 'var(--text-4)'};font-size:9px;margin-top:4px">${b.s}</div>
+                </div>`;
+            ach.appendChild(el);
+        }
+
+        // ── Progress graphs + focus areas (items 27, 10) ──
+        try {
+            if (window.PracticeFlow && window.PracticeFlow.PoseProgress) {
+                const graphsEl = document.getElementById('progress-graphs');
+                const history = JSON.parse(localStorage.getItem('sunday_voice_history') || '[]');
+                const practisedPoses = [...new Set(history.map(r => r.pose))];
+                if (practisedPoses.length && graphsEl) {
+                    graphsEl.innerHTML = '';
+                    for (const pose of practisedPoses) {
+                        const svg = window.PracticeFlow.PoseProgress.svgFor(pose, { width: 340, height: 100 });
+                        const card = document.createElement('div');
+                        card.style.cssText = 'background:var(--surface-2);border-radius:16px;padding:14px';
+                        const asana = history.find(r => r.pose === pose);
+                        card.innerHTML = `<span class="kicker" style="color:var(--primary);font-size:10px">${asana?.poseSanskrit || pose}</span>${svg}`;
+                        graphsEl.appendChild(card);
+                    }
+                }
+            }
+            if (window.PracticeFlow && window.PracticeFlow.RuleFocus) {
+                const top = window.PracticeFlow.RuleFocus.topChronic(3);
+                const focusEl = document.getElementById('focus-areas');
+                if (top.length && focusEl) {
+                    focusEl.textContent = top.map(r => r.id.split('::')[0] + ' (' + r.count + ' times)').join(', ');
+                }
+            }
+        } catch(_){}
+    })();
+    </script>
+
+    <script>
+    // ─── Profile voice assistant ───
+    // Self-contained because profile.html doesn't share the main.html app
+    // object. Routes everything through /api/assistant so users can ask
+    // questions about their stats, streaks, or yoga in general without
+    // leaving the page. Commands: stats, streak, go home, logout, voice off.
+    (function(){
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const btn = document.getElementById('voice-toggle');
+        const statusEl = document.getElementById('mic-status-text');
+        const iconEl = document.getElementById('mic-icon');
+
+        if (!SR) {
+            if (statusEl) statusEl.textContent = 'Voice N/A';
+            if (btn) btn.disabled = true;
+            return;
+        }
+
+        const rec = new SR();
+        rec.continuous = false;
+        rec.interimResults = false;
+        rec.lang = 'en-US';
+        rec.maxAlternatives = 3;
+        let listening = false;
+
+        function setStatus(on, label) {
+            listening = on;
+            if (statusEl) statusEl.textContent = label || (on ? 'Listening' : 'Voice');
+            if (iconEl) {
+                iconEl.style.color = on ? '#C2552F' : '';
+                iconEl.style.animation = on ? 'pulse 1.4s infinite' : '';
+            }
+        }
+
+        function speak(msg) {
+            try { window.speechSynthesis.cancel(); } catch(_){}
+            if (!('speechSynthesis' in window)) return;
+            const u = new SpeechSynthesisUtterance(msg);
+            u.rate = 0.95; u.pitch = 1.0; u.volume = 1.0;
+            window.speechSynthesis.speak(u);
+        }
+
+        async function askAI(prompt) {
+            setStatus(true, 'Thinking');
+            const ctx = {
+                screen: 'Profile',
+                kpiSessions: document.getElementById('kpi-sessions')?.textContent,
+                kpiDays: document.getElementById('kpi-days')?.textContent,
+                kpiStreak: document.getElementById('kpi-streak')?.textContent,
+                kpiPoses: document.getElementById('kpi-poses')?.textContent,
+                level: document.getElementById('level-name')?.textContent,
+            };
+
+            // Offline KB first — pose questions, history questions.
+            try {
+                if (window.VoiceKB && window.VoiceKB.answer) {
+                    const local = window.VoiceKB.answer(prompt, ctx);
+                    if (local) { speak(local); setStatus(true, 'Answered'); return; }
+                }
+            } catch (_) {}
+
+            // RAG fallback — catches symptom/goal queries offline.
+            try {
+                if (window.VoiceKB && window.VoiceKB.ragAnswer) {
+                    const ragReply = window.VoiceKB.ragAnswer(prompt);
+                    if (ragReply) { speak(ragReply); setStatus(true, 'Answered'); return; }
+                }
+            } catch (_) {}
+
+            try {
+                const r = await fetch('/api/assistant', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ prompt, context: ctx }),
+                });
+                const d = await r.json();
+                speak(d.text || 'Not sure about that.');
+                setStatus(true, 'Done');
+            } catch (e) {
+                speak('I can\u2019t reach the assistant right now.');
+                setStatus(true, 'Error');
+            }
+        }
+
+        rec.onstart = () => setStatus(true, 'Listening');
+        rec.onresult = (event) => {
+            // Try every alternative
+            const alts = event.results[event.results.length - 1];
+            const candidates = [];
+            for (let i = 0; i < alts.length; i++) {
+                const raw = (alts[i].transcript || '').toLowerCase().trim();
+                const cleaned = raw.replace(/^[.,!?;:"'`\-\s]+|[.,!?;:"'`\-\s]+$/g, '').trim();
+                if (cleaned) candidates.push(cleaned);
+            }
+            if (!candidates.length) return;
+            console.log('Voice alternatives:', candidates);
+            setStatus(true, 'Heard: ' + candidates[0].slice(0, 24));
+
+            // Dispatch table — first match on any alternative wins.
+            const HANDLERS = [
+                { re: /\b(voice off|stop listening|turn off mic|mute mic|pause voice)\b/, run: () => {
+                    listening = false; rec.stop(); speak('Voice off.'); setStatus(false, 'Off');
+                }},
+                { re: /\b(go (to )?home|open home|take me home|go (to )?today|open today)\b/, run: () => {
+                    speak('Going home.'); setTimeout(() => window.location.href = '/home', 500);
+                }},
+                { re: /\b(logout|log out|sign out|sign me out)\b/, run: () => {
+                    speak('Logging out.'); setTimeout(() => window.location.href = '/logout', 600);
+                }},
+                { re: /\b(my stats|(what|show|tell me) (are|is|my)? ?(stats|progress|streak|sessions|active days|days)|how many (sessions|days|poses)|poses learned)\b/, run: () => {
+                    const s = document.getElementById('kpi-sessions')?.textContent || '0';
+                    const d = document.getElementById('kpi-days')?.textContent || '0';
+                    const st = document.getElementById('kpi-streak')?.textContent || '0';
+                    const p = document.getElementById('kpi-poses')?.textContent || '0';
+                    speak(`You have ${s} sessions across ${d} active days, a best streak of ${st}, and ${p} poses learned.`);
+                    setStatus(true, 'Stats');
+                }},
+                { re: /\b((what('?s| is)? )?(my )?level|what level am i|current level)\b/, run: () => {
+                    const lvl = document.getElementById('level-name')?.textContent || 'Novice';
+                    const hint = document.getElementById('level-hint')?.textContent || '';
+                    speak(`You are at ${lvl}. ${hint}`);
+                    setStatus(true, 'Level');
+                }},
+                { re: /\b(commands|command library|list commands|what can you do|what can i say|help me|show help)\b/, run: () => {
+                    if (typeof openCommandLibrary === 'function') openCommandLibrary();
+                    speak('Opening the command library.');
+                    setStatus(true, 'Commands');
+                }},
+                { re: /\b(open (the )?library|go to library|show (the )?poses)\b/, run: () => {
+                    speak('Opening the library.'); setTimeout(() => window.location.href = '/home#library', 400);
+                }},
+                { re: /\b(start practice|go to practice|open (the )?camera|practice now)\b/, run: () => {
+                    speak('Opening practice.'); setTimeout(() => window.location.href = '/home#practice', 400);
+                }},
+                { re: /\b(start (the )?course|open (the )?course|take the course|test me|certificate|my certificate)\b/, run: () => {
+                    speak('Opening the course.'); setTimeout(() => window.location.href = '/home#course', 400);
+                }},
+            ];
+
+            for (const t of candidates) {
+                for (const h of HANDLERS) {
+                    if (h.re.test(t)) { try { h.run(); return; } catch (e) { console.warn(e); } }
+                }
+            }
+
+            // Everything else → AI with profile context
+            askAI(candidates[0]);
+        };
+        rec.onerror = (event) => {
+            if (event.error === 'not-allowed') {
+                setStatus(false, 'Blocked');
+                alert('Microphone access is blocked. Enable it in your browser settings and reload.');
+            } else if (event.error === 'audio-capture') {
+                setStatus(false, 'No mic');
+            } else if (event.error !== 'no-speech') {
+                setStatus(false, 'Error');
+            }
+        };
+        rec.onend = () => {
+            if (listening) {
+                setTimeout(() => {
+                    try { rec.start(); }
+                    catch (e) {
+                        if (!String(e).includes('already started')) setStatus(false, 'Off');
+                    }
+                }, 200);
+            } else {
+                setStatus(false, 'Voice');
+            }
+        };
+
+        window.toggleProfileVoice = function() {
+            if (listening) {
+                listening = false;
+                rec.stop();
+                setStatus(false, 'Off');
+                try { sessionStorage.setItem('sunday_mic', '0'); } catch(_){}
+            } else {
+                listening = true;
+                try {
+                    rec.start();
+                    setStatus(true, 'Listening');
+                    try { sessionStorage.setItem('sunday_mic', '1'); } catch(_){}
+                } catch (e) {
+                    setStatus(false, 'Error');
+                }
+            }
+        };
+
+        // Auto-resume on page load if the mic was on before navigation.
+        try {
+            if (sessionStorage.getItem('sunday_mic') === '1') {
+                setTimeout(() => {
+                    listening = true;
+                    try { rec.start(); setStatus(true, 'Listening'); }
+                    catch (e) { listening = false; sessionStorage.setItem('sunday_mic', '0'); }
+                }, 300);
+            }
+        } catch(_){}
+    })();
+
+    // ─── Command Library modal (self-contained for profile page) ───
+    (function(){
+        let cache = null;
+        window.openCommandLibrary = async function() {
+            const existing = document.getElementById('command-library');
+            if (existing) { existing.remove(); return; }
+            if (!cache) {
+                try {
+                    const r = await fetch('/api/commands', { credentials: 'same-origin' });
+                    const d = await r.json();
+                    cache = d.commands || [];
+                } catch (e) { cache = []; }
+            }
+            const groups = {};
+            for (const c of cache) (groups[c.category] = groups[c.category] || []).push(c);
+            const order = ['Practice', 'Voice', 'Screen', 'Navigation', 'Data', 'Wellness', 'Ask Sunday'];
+
+            const modal = document.createElement('div');
+            modal.id = 'command-library';
+            modal.style.cssText = 'position:fixed;inset:0;z-index:140;background:rgba(15,19,12,0.85);backdrop-filter:blur(10px);display:flex;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;opacity:0;transition:opacity 0.25s';
+            modal.innerHTML = `
+                <div style="background:#F5F2EB;border-radius:28px;max-width:820px;width:100%;padding:28px;box-shadow:0 30px 80px rgba(0,0,0,0.5);position:relative">
+                    <button type="button" aria-label="Close" onclick="document.getElementById('command-library').remove()"
+                        style="position:absolute;top:18px;right:18px;width:40px;height:40px;border-radius:999px;background:#EEE9DE;color:#14120E;border:0;font-size:20px;cursor:pointer">\u00d7</button>
+                    <span class="kicker" style="color:#C2552F">Command library</span>
+                    <h2 style="font-family:Fraunces,serif;font-size:34px;font-weight:300;letter-spacing:-0.02em;color:#14120E;margin:6px 0 4px">What you can say to Sunday.</h2>
+                    <p style="color:#4A453B;font-size:14px;margin:0 0 18px;max-width:620px;line-height:1.6">Tap any phrase or say it aloud. Questions and anything else routes to the AI with full app knowledge.</p>
+                    <input id="cmd-search" type="search" placeholder="Search commands..." autocomplete="off"
+                        style="width:100%;height:44px;padding:0 16px;border-radius:12px;border:1px solid #D4CCB8;background:#FFF;font-family:inherit;font-size:14px;color:#14120E;outline:none;margin-bottom:18px"/>
+                    <div id="cmd-groups"></div>
+                </div>`;
+
+            const render = (filter) => {
+                const container = modal.querySelector('#cmd-groups');
+                container.innerHTML = '';
+                const f = (filter || '').toLowerCase();
+                for (const cat of order) {
+                    const items = (groups[cat] || []).filter(c => {
+                        if (!f) return true;
+                        return (c.description + ' ' + c.phrases.join(' ') + ' ' + (c.example || '')).toLowerCase().includes(f);
+                    });
+                    if (!items.length) continue;
+                    const sec = document.createElement('section');
+                    sec.style.cssText = 'margin-bottom:22px';
+                    sec.innerHTML = `
+                        <span class="kicker" style="color:#0F3D2E">${cat}</span>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:8px">
+                            ${items.map(c => `
+                                <div style="background:#EEE9DE;border:1px solid #D4CCB8;border-radius:16px;padding:14px">
+                                    <div style="font-family:Fraunces,serif;font-size:18px;font-weight:400;color:#14120E">${c.phrases[0]}</div>
+                                    <div style="color:#4A453B;font-size:13px;line-height:1.5;margin-top:4px">${c.description}</div>
+                                    ${c.phrases.length > 1 ? `<div class="kicker" style="color:#7A7364;font-size:10px;margin-top:8px">Also: ${c.phrases.slice(1, 4).join(' \u00b7 ')}</div>` : ''}
+                                </div>`).join('')}
+                        </div>`;
+                    container.appendChild(sec);
+                }
+            };
+            document.body.appendChild(modal);
+            requestAnimationFrame(() => modal.style.opacity = '1');
+            render('');
+            modal.querySelector('#cmd-search').addEventListener('input', (e) => render(e.target.value));
+            modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+            setTimeout(() => modal.querySelector('#cmd-search').focus(), 260);
+        };
+    })();
+    </script>
+</body>
+</html>

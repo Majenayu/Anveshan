@@ -54,3 +54,14 @@ This is an actively evolving project. Production hardening, observability, rate 
 ## License
 
 See the repository license file and package metadata for the authoritative terms.
+## Implementation notes
+
+This is a Flask yoga/wellness experience with `app.py` as the hosting entrypoint. The HTML views (`index.html`, `main.html`, `profile.html`, and related pages) consume pose and practice assets under `static/`; `assistant.py` and the auxiliary Python modules support assistant and workflow experiments. `Procfile` defines Gunicorn deployment.
+
+### API and workflow
+
+Authentication and home/register flows are implemented in the Flask application; use the route decorators in `app.py` as the source of truth. Verify session handling, practice navigation, service-worker caching, and behavior when MongoDB or browser media features are unavailable.
+
+### License status
+
+No dedicated license file is present in the inspected tree; license terms are unspecified until explicitly documented.
